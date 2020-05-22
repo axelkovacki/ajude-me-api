@@ -1,0 +1,28 @@
+version: "2"
+services:
+  mysql_ajude_me:
+    image: mariadb:10.3
+    entrypoint: docker-entrypoint.sh --sql-mode='STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+    ports:
+      - 3306:3306
+    networks:
+      - ajude_me
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=123456
+      - MYSQL_DATABASE=ajude_me
+    container_name: mysql_ajude_me
+  phpmyadmin_ajude_me:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8181:80
+    networks:
+      - ajude_me
+    environment:
+      PMA_HOST: mysql_ajude_me
+    container_name: phpmyadmin_ajude_me
+networks:
+  ajude_me:
+    external:
+      name: ajude_me_network
