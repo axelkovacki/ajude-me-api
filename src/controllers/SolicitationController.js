@@ -1,56 +1,48 @@
-const connection = require('../database'); 
+const connection = require('../database');
 
 module.exports = { 
   async index(request, response) {
-    const data = await connection('users');
+    const data = await connection('solicitations').where('status', 1);
+    
+    return response.json(data);
+  },
+
+  async show(request, response) {
+    const { id } = request.params
+
+    const data = await connection('solicitations').where('id', id).first();
     
     return response.json(data);
   },
 
   async create(request, response) {
-    const body = request.body;
+    const { user } = request.contents;
+    const { body } = request;
 
-    if (body.password) {
-      body.password = md5(body.password);
+    if (user.type !== 1) {
+      return response.status(400).json({ error: 'User not Unauthorized to create a Solicitation!' });
     }
 
-    const data = await connection('users').insert(body);
+    const data = await connection('solicitations').insert({
+      ...body,
+      user_id: user.id,
+      status: 1
+    });
 
     return response.json(data);
   },
 
   async update(request, response) {
-    const body = request.body;
+    const { id } = request.params;
+    const { user } = request.contents;
+    const { body } = request;
 
-    if (body.password) {
-      body.password = md5(body.password);
+    if (user.type !== 1) {
+      return response.status(400).json({ error: 'User not Unauthorized to create a Solicitation!' });
     }
 
-    const data = await connection('users').insert(body);
+    const data = await connection('solicitations').where('id', id).where('user_id', user.id).update(body);
 
-    return response.json(data);
-  },
-
-  async login(request, response) {
-    const { username, password } = request.body;
-
-    const data = await connection('users')
-      .where('username', username)
-      .where('password', md5(password))
-      .first();
-
-    if (!data) {
-      return response.status(400).json(data);
-    }
-
-    return response.json(data);
-  },
-  
-  async delete(request, response) {
-    const { id } = request.params
-
-    const data = await connection('users').where('id', id).del();
-    
     return response.json(data);
   }
 }

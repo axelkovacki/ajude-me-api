@@ -41,6 +41,12 @@ module.exports = {
       body.password = md5(body.password);
     }
 
+    const exist = await connection('users').where('username', body.username).orWhere('email', body.email).first();
+
+    if (exist) {
+      return response.status(409).json({ error: 'Usuário ou E-mail já existente!' })
+    }
+
     const data = await connection('users').insert(body);
 
     return response.json(data);

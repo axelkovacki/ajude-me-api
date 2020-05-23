@@ -1,56 +1,37 @@
 const connection = require('../database'); 
 
 module.exports = { 
-  async index(request, response) {
-    const data = await connection('users');
-    
-    return response.json(data);
-  },
-
   async create(request, response) {
-    const body = request.body;
+    const { id } = request.params;
+    const { user } = request.contents;
+    const { body } = request;
 
-    if (body.password) {
-      body.password = md5(body.password);
+    if (user.type !== 1 || user.id === body.receiving) {
+      return response.status(400).json({ error: 'User not Unauthorized to Transfer!' });
     }
 
-    const data = await connection('users').insert(body);
+    const solicitation = await connection('solicitations').where('id', id).where('user_id', user.id).first();
 
-    return response.json(data);
-  },
-
-  async update(request, response) {
-    const body = request.body;
-
-    if (body.password) {
-      body.password = md5(body.password);
+    if (!solicitation) {
+      return response.status(404).json({ error: 'Solicitation not found!' });
     }
 
-    const data = await connection('users').insert(body);
+    const userReceiving = await connection('users').where('id', body.receiving).first();
 
-    return response.json(data);
-  },
-
-  async login(request, response) {
-    const { username, password } = request.body;
-
-    const data = await connection('users')
-      .where('username', username)
-      .where('password', md5(password))
-      .first();
-
-    if (!data) {
-      return response.status(400).json(data);
+    if (!userReceiving) {
+      return response.status(404).json({ error: 'User to receive not found!' });
     }
-
-    return response.json(data);
-  },
-  
-  async delete(request, response) {
-    const { id } = request.params
-
-    const data = await connection('users').where('id', id).del();
     
+    const solicitationCredits = await connection('solicitation_credits').insert({
+      user_depositor_id: user.id,
+      user_receiving_id: user.id,
+      solicitation_id: solicitation.id
+    });
+
+    const data = await connection('users').where('id', userReceiving.id).update({
+      credit: userReceiving.credit + solicitation.credit
+    });
+
     return response.json(data);
   }
 }
