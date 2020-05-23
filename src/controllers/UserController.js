@@ -1,21 +1,10 @@
-const connection = require('../database'); 
+const connection = require('../database');
+const md5 = require('md5');
 
 module.exports = { 
   async index(request, response) {
     const data = await connection('users');
     
-    return response.json(data);
-  },
-
-  async create(request, response) {
-    const body = request.body;
-
-    if (body.password) {
-      body.password = md5(body.password);
-    }
-
-    const data = await connection('users').insert(body);
-
     return response.json(data);
   },
 
@@ -33,9 +22,45 @@ module.exports = {
 
     return response.json(data);
   },
+
+  async show(request, response) {
+    const { id } = request.params
+
+    const data = await connection('users').where('id', id).first();
+    
+    return response.json(data);
+  },
+
+  async create(request, response) {
+    let body = request.body;
+
+    body.credit = 0;
+    body.access_token = md5(`${body.email}@${body.password}`);
+
+    if (body.password) {
+      body.password = md5(body.password);
+    }
+
+    const data = await connection('users').insert(body);
+
+    return response.json(data);
+  },
+
+  async update(request, response) {
+    const { id } = request.params;
+    let body = request.body;
+
+    if (body.password) {
+      body.password = md5(body.password);
+    }
+
+    const data = await connection('users').where('id', id).update(body);
+
+    return response.json(data);
+  },
   
   async delete(request, response) {
-    const { id } = request.params
+    const { id } = request.params;
 
     const data = await connection('users').where('id', id).del();
     
