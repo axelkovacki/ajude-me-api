@@ -38,7 +38,7 @@ module.exports = {
     const { body } = request;
 
     if (user.type !== 1) {
-      return response.status(400).json({ error: 'User not Unauthorized to create a Solicitation!' });
+      return response.status(400).json({ error: 'User not Unauthorized to update a Solicitation!' });
     }
 
     const data = await connection('solicitations').where('id', id).where('user_id', user.id).update(body);
