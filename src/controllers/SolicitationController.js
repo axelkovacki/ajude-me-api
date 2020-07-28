@@ -2,7 +2,16 @@ const connection = require('../database');
 
 module.exports = { 
   async index(request, response) {
-    const data = await connection('solicitations').where('status', 1);
+    const data = await connection('solicitations')
+      .select(
+        'users.name',
+        'users.phone',
+        'users.adress',
+        'solicitations.credit',
+        'solicitations.description',  
+      )
+      .join('users', 'users.id', '=', 'solicitations.user_id')
+      .where('solicitations.status', 1);
     
     return response.json(data);
   },

@@ -41,6 +41,10 @@ module.exports = {
       body.password = md5(body.password);
     }
 
+    if (!body.type) {
+      body.type = 3;
+    }
+
     const exist = await connection('users').where('username', body.username).orWhere('email', body.email).first();
 
     if (exist) {

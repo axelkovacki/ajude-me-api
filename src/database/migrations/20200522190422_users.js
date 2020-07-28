@@ -7,6 +7,7 @@ exports.up = function(knex) {
     table.string('email', 100).unique().notNullable();
     table.string('cpf');
     table.string('cnpj');
+    // 1 - Ongs, 2 - Partners, 3 - Consumers Users
     table.integer('type').notNullable();
     table.string('phone');
     table.string('adress');
