@@ -2,17 +2,26 @@ const connection = require('../database');
 
 module.exports = { 
   async index(request, response) {
-    const data = await connection('solicitations')
+    const { user } = request.contents;
+
+    let data = await connection('solicitations')
       .select(
         'users.name',
         'users.phone',
         'users.adress',
+        'solicitations.id',
         'solicitations.credit',
         'solicitations.description',  
       )
       .join('users', 'users.id', '=', 'solicitations.user_id')
-      .where('solicitations.status', 1);
-    
+      .where('solicitations.status', 1)
+      .where(builder => {
+        if (user.type == 3) {
+          builder.where('solicitations.user_id', '=', user.id);
+        }
+      })
+      .orderBy('solicitations.id', 'DESC');
+
     return response.json(data);
   },
 
@@ -29,7 +38,7 @@ module.exports = {
     const { body } = request;
 
     if (user.type !== 1) {
-      return response.status(400).json({ error: 'User not Unauthorized to create a Solicitation!' });
+      return response.status(400).json({ error: 'User unauthorized to create a Solicitation!' });
     }
 
     const data = await connection('solicitations').insert({
@@ -50,7 +59,11 @@ module.exports = {
       return response.status(400).json({ error: 'User not Unauthorized to update a Solicitation!' });
     }
 
-    const data = await connection('solicitations').where('id', id).where('user_id', user.id).update(body);
+    const data = await connection('solicitations').where('id', id).where('user_id', user.id).update({
+      description: body.description,
+      credit: body.credit,
+      status: body.status
+    });
 
     return response.json(data);
   }
