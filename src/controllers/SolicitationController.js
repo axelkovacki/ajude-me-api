@@ -4,11 +4,11 @@ module.exports = {
   async index(request, response) {
     const { user } = request.contents;
 
-    let data = await connection('solicitations')
+    const data = await connection('solicitations')
       .select(
         'users.name',
         'users.phone',
-        'users.adress',
+        'users.address',
         'solicitations.id',
         'solicitations.credit',
         'solicitations.description',  
@@ -16,7 +16,7 @@ module.exports = {
       .join('users', 'users.id', '=', 'solicitations.user_id')
       .where('solicitations.status', 1)
       .where(builder => {
-        if (user.type == 3) {
+        if (user.type == 1) {
           builder.where('solicitations.user_id', '=', user.id);
         }
       })

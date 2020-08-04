@@ -53,7 +53,9 @@ module.exports = {
 
     const data = await connection('users').insert(body);
 
-    return response.json(data);
+    const user = await connection('users').where('id', data[0]).first()
+
+    return response.json(user);
   },
 
   async update(request, response) {

@@ -10,7 +10,7 @@ exports.up = function(knex) {
     // 1 - Ongs, 2 - Partners, 3 - Consumers Users
     table.integer('type').notNullable();
     table.string('phone');
-    table.string('adress');
+    table.string('address');
     table.integer('credit').notNullable();
     table.string('access_token', 200);
     table.integer('status').defaultTo(1).notNullable();

@@ -2,8 +2,21 @@ const connection = require('../database');
 
 module.exports = { 
   async index(request, response) {
-    const data = await connection('rewards').where('status', 1);
-    
+    const { user } = request.contents;
+
+    const data = await connection('rewards')
+      .select(
+        'users.name',
+        'users.phone',
+        'users.address',
+        'rewards.id',
+        'rewards.credit',
+        'rewards.description',  
+      )
+      .join('users', 'users.id', '=', 'rewards.user_id')
+      .where('rewards.status', 1)
+      .orderBy('rewards.id', 'DESC');
+
     return response.json(data);
   },
 
@@ -41,7 +54,11 @@ module.exports = {
       return response.status(400).json({ error: 'User not Unauthorized to update a Reward!' });
     }
 
-    const data = await connection('rewards').where('id', id).where('user_id', user.id).update(body);
+    const data = await connection('rewards').where('id', id).where('user_id', user.id).update({
+      description: body.description,
+      credit: body.credit,
+      status: body.status
+    });
 
     return response.json(data);
   }
