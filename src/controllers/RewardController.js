@@ -6,6 +6,7 @@ module.exports = {
 
     const data = await connection('rewards')
       .select(
+        'users.id as userId',
         'users.name',
         'users.phone',
         'users.address',
@@ -14,9 +15,14 @@ module.exports = {
         'rewards.description',  
       )
       .join('users', 'users.id', '=', 'rewards.user_id')
+      .where(builder => {
+        if (user.type == 2) {
+          builder.where('rewards.user_id', '=', user.id);
+        }
+      })
       .where('rewards.status', 1)
-      .orderBy('rewards.id', 'DESC');
-
+      .orderBy('rewards.credit', 'ASC');
+  
     return response.json(data);
   },
 
