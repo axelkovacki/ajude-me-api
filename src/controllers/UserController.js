@@ -9,10 +9,10 @@ module.exports = {
   },
 
   async login(request, response) {
-    const { username, password } = request.body;
+    const { email, password } = request.body;
 
     const data = await connection('users')
-      .where('username', username)
+      .where('email', email)
       .where('password', md5(password))
       .first();
 
