@@ -6,7 +6,7 @@ module.exports = {
     const { type, supporter } = request.query;
 
     const data = await connection('users')
-      .select('name', 'cpf', 'cnpj', 'phone', 'address', 'image', 'link')
+      .select('id', 'name', 'cpf', 'cnpj', 'phone', 'address', 'image', 'link')
       .where(query => {
         if (type != undefined) {
           query.where('type', '=', type);
