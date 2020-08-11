@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "Ajude-me API",
+      "script": "npm",
+      "args" : "run production"
+    }
+  ]
+}
