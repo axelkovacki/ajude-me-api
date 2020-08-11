@@ -9,8 +9,11 @@ exports.up = function(knex) {
     table.string('cnpj');
     // 1 - Ongs, 2 - Partners, 3 - Consumers Users
     table.integer('type').notNullable();
+    table.integer('supporter').defaultTo(0).notNullable();
     table.string('phone');
     table.string('address');
+    table.string('link');
+    table.string('image');
     table.integer('credit').notNullable();
     table.string('access_token', 200);
     table.integer('status').defaultTo(1).notNullable();

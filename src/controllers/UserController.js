@@ -3,7 +3,19 @@ const md5 = require('md5');
 
 module.exports = { 
   async index(request, response) {
-    const data = await connection('users');
+    const { type, supporter } = request.query;
+
+    const data = await connection('users')
+      .select('name', 'cpf', 'cnpj', 'phone', 'address', 'image', 'link')
+      .where(query => {
+        if (type != undefined) {
+          query.where('type', '=', type);
+        }
+
+        if (supporter != undefined) {
+          query.where('supporter', '=', supporter);
+        }
+      });
     
     return response.json(data);
   },
@@ -62,13 +74,23 @@ module.exports = {
     const { id } = request.params;
     let body = request.body;
 
+    let payload = {
+      name: body.name,
+      email: body.email,
+      cpf: body.cpf,
+      phone: body.phone,
+      address: body.address,
+    };
+
     if (body.password) {
-      body.password = md5(body.password);
-    }
+      payload.password = md5(body.password);
+    } 
 
-    const data = await connection('users').where('id', id).update(body);
+    await connection('users').where('id', id).update(payload);
+    
+    const user = await connection('users').where('id', id).first();
 
-    return response.json(data);
+    return response.json(user);
   },
   
   async delete(request, response) {
