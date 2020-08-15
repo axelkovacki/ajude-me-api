@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 
 // Middlewares
 const AuthenticationMiddleware = require('./middlewares/AuthenticationMiddleware.js');
@@ -12,9 +13,7 @@ const RewardCreditController = require('./controllers/RewardCreditController.js'
 
 const routes = express.Router();
 
-routes.get('/', (request, response) => {
-  return response.send('Ajude-me API is alive!');
-});
+routes.get('/', (request, response) => response.sendFile(path.join(__dirname, 'assets/webapp', 'index.html')));
 
 routes.post('/user/login', UserController.login);
 routes.get('/user', UserController.index);
