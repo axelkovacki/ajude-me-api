@@ -60,7 +60,7 @@ module.exports = {
     const exist = await connection('users').where('email', body.email).first();
 
     if (exist) {
-      return response.status(409).json({ error: 'Usuário ou E-mail já existente!' })
+      return response.status(409).json({ error: 'E-mail já existente!' })
     }
 
     const data = await connection('users').insert(body);
@@ -74,6 +74,12 @@ module.exports = {
     const { id } = request.params;
     let body = request.body;
 
+    const exist = await connection('users').where('email', body.email).first();
+
+    if (exist) {
+      return response.status(409).json({ error: 'E-mail já existente!' })
+    }
+
     let payload = {
       name: body.name,
       email: body.email,
@@ -84,7 +90,15 @@ module.exports = {
 
     if (body.password) {
       payload.password = md5(body.password);
-    } 
+    }
+
+    if (body.facebook) {
+      payload.facebook = body.facebook;
+    }
+
+    if (body.instagram) {
+      payload.instagram = body.instagram;
+    }
 
     await connection('users').where('id', id).update(payload);
     

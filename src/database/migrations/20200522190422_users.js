@@ -14,7 +14,6 @@ exports.up = function(knex) {
     table.string('link');
     table.string('facebook');
     table.string('instagram');
-    table.string('email');
     table.string('image');
     table.integer('credit').notNullable();
     table.string('access_token', 200);
