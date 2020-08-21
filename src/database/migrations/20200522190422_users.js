@@ -2,7 +2,6 @@ exports.up = function(knex) {
   return knex.schema.createTable('users', function(table) {
     table.increments('id').unsigned().primary();
     table.string('name', 200).notNullable();
-    table.string('username', 50).unique().notNullable();
     table.string('password', 200).notNullable();
     table.string('email', 100).unique().notNullable();
     table.string('cpf');
@@ -13,6 +12,9 @@ exports.up = function(knex) {
     table.string('phone');
     table.string('address');
     table.string('link');
+    table.string('facebook');
+    table.string('instagram');
+    table.string('email');
     table.string('image');
     table.integer('credit').notNullable();
     table.string('access_token', 200);

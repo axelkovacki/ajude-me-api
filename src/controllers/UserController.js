@@ -57,7 +57,7 @@ module.exports = {
       body.type = 3;
     }
 
-    const exist = await connection('users').where('username', body.username).orWhere('email', body.email).first();
+    const exist = await connection('users').where('email', body.email).first();
 
     if (exist) {
       return response.status(409).json({ error: 'Usuário ou E-mail já existente!' })
