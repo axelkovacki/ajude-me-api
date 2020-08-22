@@ -21,11 +21,16 @@ module.exports = {
     if (!userReceiving) {
       return response.status(404).json({ error: 'User to receive not found!' });
     }
+
+    if (userReceiving.credit < reward.credit) {
+      return response.status(404).json({ error: 'User does not have enough credits' });
+    }
     
     const rewardCredits = await connection('reward_credits').insert({
       user_depositor_id: user.id,
       user_receiving_id: user.id,
-      reward_id: reward.id
+      reward_id: reward.id,
+      credit: reward.credit
     });
 
     const data = await connection('users').where('id', userReceiving.id).update({

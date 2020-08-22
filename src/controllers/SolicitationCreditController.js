@@ -25,7 +25,8 @@ module.exports = {
     const solicitationCredits = await connection('solicitation_credits').insert({
       user_depositor_id: user.id,
       user_receiving_id: user.id,
-      solicitation_id: solicitation.id
+      solicitation_id: solicitation.id,
+      credit: solicitation.credit
     });
 
     const data = await connection('users').where('id', userReceiving.id).update({
