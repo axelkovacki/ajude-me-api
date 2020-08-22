@@ -3,6 +3,7 @@ const connection = require('../database');
 module.exports = { 
   async index(request, response) {
     const { user } = request.contents;
+    const { category_id } = request.query;
 
     const data = await connection('solicitations')
       .select(
@@ -10,6 +11,7 @@ module.exports = {
         'users.phone',
         'users.address',
         'solicitations.id',
+        'solicitations.category_id',
         'solicitations.credit',
         'solicitations.description',  
       )
@@ -18,6 +20,10 @@ module.exports = {
       .where(builder => {
         if (user.type == 1) {
           builder.where('solicitations.user_id', '=', user.id);
+        }
+
+        if (category_id) {
+          builder.where('solicitations.category_id', '=', category_id);
         }
       })
       .orderBy('solicitations.id', 'DESC');
@@ -60,6 +66,7 @@ module.exports = {
     }
 
     const data = await connection('solicitations').where('id', id).where('user_id', user.id).update({
+      category_id: body.category_id,
       description: body.description,
       credit: body.credit,
       status: body.status

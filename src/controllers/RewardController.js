@@ -3,6 +3,7 @@ const connection = require('../database');
 module.exports = { 
   async index(request, response) {
     const { user } = request.contents;
+    const { category_id } = request.query;
 
     const data = await connection('rewards')
       .select(
@@ -11,6 +12,7 @@ module.exports = {
         'users.phone',
         'users.address',
         'rewards.id',
+        'rewards.category_id',
         'rewards.credit',
         'rewards.description',  
       )
@@ -18,6 +20,10 @@ module.exports = {
       .where(builder => {
         if (user.type == 2) {
           builder.where('rewards.user_id', '=', user.id);
+        }
+
+        if (category_id) {
+          builder.where('rewards.category_id', '=', category_id);
         }
       })
       .where('rewards.status', 1)
@@ -61,6 +67,7 @@ module.exports = {
     }
 
     const data = await connection('rewards').where('id', id).where('user_id', user.id).update({
+      category_id: body.category_id,
       description: body.description,
       credit: body.credit,
       status: body.status

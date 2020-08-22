@@ -7,8 +7,10 @@ const AuthenticationMiddleware = require('./middlewares/AuthenticationMiddleware
 // Controllers
 const UserController = require('./controllers/UserController.js');
 const SolicitationController = require('./controllers/SolicitationController.js');
+const SolicitationCategoryController = require('./controllers/SolicitationCategoryController.js');
 const SolicitationCreditController = require('./controllers/SolicitationCreditController.js');
 const RewardController = require('./controllers/RewardController.js');
+const RewardCategoryController = require('./controllers/RewardCategoryController.js');
 const RewardCreditController = require('./controllers/RewardCreditController.js');
 
 const routes = express.Router();
@@ -27,11 +29,13 @@ routes.use((request, response, next) => {
 }); 
 
 routes.get('/solicitations', SolicitationController.index);
+routes.get('/solicitations/categories', SolicitationCategoryController.index);
 routes.post('/solicitations', SolicitationController.create);
 routes.put('/solicitations/:id', SolicitationController.update);
 routes.post('/solicitations/:id/credits/donate', SolicitationCreditController.create);
 
 routes.get('/rewards', RewardController.index);
+routes.get('/rewards/categories', RewardCategoryController.index);
 routes.post('/rewards', RewardController.create);
 routes.put('/rewards/:id', RewardController.update);
 routes.post('/rewards/:id/credits/take', RewardCreditController.create);
