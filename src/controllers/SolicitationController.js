@@ -10,10 +10,14 @@ module.exports = {
         'users.name',
         'users.phone',
         'users.address',
+        'users.facebook',
+        'users.instagram',
         'solicitations.id',
         'solicitations.category_id',
-        'solicitations.credit',
+        'solicitations.title',  
         'solicitations.description',  
+        'solicitations.link',  
+        'solicitations.credit',
       )
       .join('users', 'users.id', '=', 'solicitations.user_id')
       .where('solicitations.status', 1)
@@ -67,8 +71,10 @@ module.exports = {
 
     const data = await connection('solicitations').where('id', id).where('user_id', user.id).update({
       category_id: body.category_id,
+      title: body.title,
       description: body.description,
       credit: body.credit,
+      link: body.link,
       status: body.status
     });
 

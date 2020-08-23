@@ -11,10 +11,14 @@ module.exports = {
         'users.name',
         'users.phone',
         'users.address',
+        'users.instagram',
+        'users.facebook',
         'rewards.id',
         'rewards.category_id',
         'rewards.credit',
-        'rewards.description',  
+        'rewards.title',
+        'rewards.description',
+        'rewards.link'
       )
       .join('users', 'users.id', '=', 'rewards.user_id')
       .where(builder => {
@@ -68,7 +72,9 @@ module.exports = {
 
     const data = await connection('rewards').where('id', id).where('user_id', user.id).update({
       category_id: body.category_id,
+      title: body.title,
       description: body.description,
+      link: body.link,
       credit: body.credit,
       status: body.status
     });
