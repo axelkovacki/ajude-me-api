@@ -7,7 +7,7 @@ module.exports = {
     connection: {
       database: 'ajude_me',
       user: 'root',
-      password: '123456',
+      password: '.01Suporte',
     },
     migrations: {
       directory: './src/database/migrations',
